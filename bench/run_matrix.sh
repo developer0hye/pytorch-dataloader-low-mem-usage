@@ -2,7 +2,7 @@
 # Runs the full mode x start-method matrix sequentially with progress/ETA lines.
 cd "$(dirname "$0")"
 PY=${PY:-python}
-MODES="list numpy sharedlist usm"
+MODES="list numpy sharedlist usm fastsharedlist sharedarray"
 CTXS="fork forkserver spawn"
 total=$(( $(echo $MODES | wc -w) * $(echo $CTXS | wc -w) ))
 k=0; t0=$(date +%s)

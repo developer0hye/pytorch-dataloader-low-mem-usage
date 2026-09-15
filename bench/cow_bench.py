@@ -7,6 +7,8 @@ Compares how the dataset *metadata* representation drives worker memory:
   sharedlist  PR pytorch/pytorch#191555 SharedList wrapping the same tuples
   usm         PR #191555 `to_shared_dataset()` applied to a dataset holding the
               list (what `DataLoader(use_shared_memory=True)` does)
+  fastsharedlist  fastpath.py prototype: PR layout, numpy-view reads
+  sharedarray     fastpath.py prototype: typed columns shared via torch storage
 
 across start methods (fork / forkserver / spawn).  Python 3.14 made forkserver
 the POSIX default, so fork-only conclusions are not enough.
@@ -19,7 +21,7 @@ parent's ru_maxrss captures the packing peak that construction-time
 serialization causes (pickle whole list -> pickle per item -> bytearray ->
 frombuffer copy).
 
-Usage: python cow_bench2.py --mode list --ctx fork [--n 3000000 --workers 4]
+Usage: python cow_bench.py --mode list --ctx fork [--n 3000000 --workers 4]
 """
 import argparse
 import gc
@@ -98,6 +100,44 @@ class SharedListDS(Dataset):
         return len(p), l
 
 
+class FastSharedListDS(Dataset):
+    """Same tuples as SharedListDS, through the fastpath.py prototype."""
+
+    def __init__(self, n):
+        from fastpath import FastSharedList
+
+        tmp = make_items(n)
+        self.items = FastSharedList(tmp)
+        del tmp
+        gc.collect()
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, i):
+        p, l = self.items[i]
+        return len(p), l
+
+
+class SharedArrayDS(Dataset):
+    """Typed columns (S32 paths, int64 labels) shared via torch storage."""
+
+    def __init__(self, n):
+        from fastpath import SharedArray
+
+        tmp = [f"/data/images/{i:09d}.jpg" for i in range(n)]
+        self.paths = SharedArray(np.array(tmp, dtype="S32"))
+        del tmp
+        self.labels = SharedArray(np.arange(n, dtype=np.int64))
+        gc.collect()
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, i):
+        return len(self.paths[i]), int(self.labels[i])
+
+
 def build(mode, n):
     if mode == "list":
         return ListDS(n)
@@ -105,6 +145,10 @@ def build(mode, n):
         return NumpyDS(n)
     if mode == "sharedlist":
         return SharedListDS(n)
+    if mode == "fastsharedlist":
+        return FastSharedListDS(n)
+    if mode == "sharedarray":
+        return SharedArrayDS(n)
     if mode == "usm":
         from pr_shared_container import to_shared_dataset
 
@@ -115,7 +159,8 @@ def build(mode, n):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", required=True, choices=["list", "numpy", "sharedlist", "usm"])
+    ap.add_argument("--mode", required=True,
+                    choices=["list", "numpy", "sharedlist", "usm", "fastsharedlist", "sharedarray"])
     ap.add_argument("--ctx", default="fork", choices=["fork", "forkserver", "spawn"])
     ap.add_argument("--n", type=int, default=3_000_000)
     ap.add_argument("--workers", type=int, default=4)

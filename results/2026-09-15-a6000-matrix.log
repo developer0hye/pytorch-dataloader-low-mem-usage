@@ -1,0 +1,127 @@
+total units: 12 (modes x start methods)
+[1/12] mode=list ctx=fork
+mode=list       ctx=fork       N=3000000 workers=4
+  build    1.1s  parent Rss 495->1025MB  parent peak(ru_maxrss) 1018MB
+  __getitem__    0.62 us/item (single process, 20000 random)
+  worker startup   0.2s  epoch   5.0s  (0.60 M items/s)
+  worker Pss           start     181MB -> end     574MB
+  worker Private_Dirty start      19MB -> end     512MB
+  worker Rss (naive)   end       826MB
+  sum worker private    2050MB   family Pss (parent+workers)    2976MB
+  elapsed 9s  avg/unit 9s  ETA 1m39s
+  -> projected total 1m
+[2/12] mode=numpy ctx=fork
+mode=numpy      ctx=fork       N=3000000 workers=4
+  build    0.9s  parent Rss 495->611MB  parent peak(ru_maxrss) 833MB
+  __getitem__    0.43 us/item (single process, 20000 random)
+  worker startup   0.2s  epoch   4.5s  (0.67 M items/s)
+  worker Pss           start      86MB -> end      87MB
+  worker Private_Dirty start       6MB -> end       7MB
+  worker Rss (naive)   end       412MB
+  sum worker private      28MB   family Pss (parent+workers)     608MB
+  elapsed 16s  avg/unit 8s  ETA 1m20s
+[3/12] mode=sharedlist ctx=fork
+mode=sharedlist ctx=fork       N=3000000 workers=4
+  build    3.1s  parent Rss 495->936MB  parent peak(ru_maxrss) 1728MB
+  __getitem__    6.14 us/item (single process, 20000 random)
+  worker startup   0.2s  epoch   8.0s  (0.37 M items/s)
+  worker Pss           start     153MB -> end     155MB
+  worker Private_Dirty start       6MB -> end       7MB
+  worker Rss (naive)   end       737MB
+  sum worker private      28MB   family Pss (parent+workers)     935MB
+  elapsed 30s  avg/unit 10s  ETA 1m30s
+[4/12] mode=usm ctx=fork
+mode=usm        ctx=fork       N=3000000 workers=4
+  build    4.8s  parent Rss 495->956MB  parent peak(ru_maxrss) 1824MB
+  __getitem__    6.02 us/item (single process, 20000 random)
+  worker startup   0.3s  epoch   7.8s  (0.39 M items/s)
+  worker Pss           start     157MB -> end     159MB
+  worker Private_Dirty start       6MB -> end       7MB
+  worker Rss (naive)   end       756MB
+  sum worker private      28MB   family Pss (parent+workers)     955MB
+  elapsed 45s  avg/unit 11s  ETA 1m28s
+[5/12] mode=list ctx=forkserver
+mode=list       ctx=forkserver N=3000000 workers=4
+  build    1.0s  parent Rss 495->1025MB  parent peak(ru_maxrss) 1018MB
+  __getitem__    0.77 us/item (single process, 20000 random)
+  worker startup  13.9s  epoch   4.5s  (0.66 M items/s)
+  worker Pss           start     840MB -> end     840MB
+  worker Private_Dirty start     805MB -> end     805MB
+  worker Rss (naive)   end      1028MB
+  sum worker private    3220MB   family Pss (parent+workers)    4210MB
+  elapsed 67s  avg/unit 13s  ETA 1m31s
+[6/12] mode=numpy ctx=forkserver
+mode=numpy      ctx=forkserver N=3000000 workers=4
+  build    0.9s  parent Rss 495->611MB  parent peak(ru_maxrss) 834MB
+  __getitem__    0.45 us/item (single process, 20000 random)
+  worker startup   6.0s  epoch   5.3s  (0.56 M items/s)
+  worker Pss           start     426MB -> end     426MB
+  worker Private_Dirty start     391MB -> end     391MB
+  worker Rss (naive)   end       614MB
+  sum worker private    1564MB   family Pss (parent+workers)    2209MB
+  elapsed 81s  avg/unit 13s  ETA 1m18s
+[7/12] mode=sharedlist ctx=forkserver
+mode=sharedlist ctx=forkserver N=3000000 workers=4
+  build    3.1s  parent Rss 495->937MB  parent peak(ru_maxrss) 1728MB
+  __getitem__    5.73 us/item (single process, 20000 random)
+  worker startup   1.3s  epoch   7.7s  (0.39 M items/s)
+  worker Pss           start     329MB -> end     344MB
+  worker Private_Dirty start     276MB -> end     277MB
+  worker Rss (naive)   end       661MB
+  sum worker private    1106MB   family Pss (parent+workers)    2010MB
+  elapsed 95s  avg/unit 13s  ETA 1m5s
+[8/12] mode=usm ctx=forkserver
+mode=usm        ctx=forkserver N=3000000 workers=4
+  build    4.3s  parent Rss 495->956MB  parent peak(ru_maxrss) 1828MB
+  __getitem__    5.32 us/item (single process, 20000 random)
+  worker startup   1.3s  epoch   7.5s  (0.40 M items/s)
+  worker Pss           start     335MB -> end     344MB
+  worker Private_Dirty start     276MB -> end     277MB
+  worker Rss (naive)   end       661MB
+  sum worker private    1106MB   family Pss (parent+workers)    2030MB
+  elapsed 111s  avg/unit 13s  ETA 0m52s
+[9/12] mode=list ctx=spawn
+mode=list       ctx=spawn      N=3000000 workers=4
+  build    1.0s  parent Rss 495->1025MB  parent peak(ru_maxrss) 1018MB
+  __getitem__    0.58 us/item (single process, 20000 random)
+  worker startup  13.2s  epoch   4.5s  (0.66 M items/s)
+  worker Pss           start     841MB -> end     842MB
+  worker Private_Dirty start     806MB -> end     806MB
+  worker Rss (naive)   end      1029MB
+  sum worker private    3226MB   family Pss (parent+workers)    4216MB
+  elapsed 132s  avg/unit 14s  ETA 0m42s
+[10/12] mode=numpy ctx=spawn
+mode=numpy      ctx=spawn      N=3000000 workers=4
+  build    0.9s  parent Rss 495->611MB  parent peak(ru_maxrss) 834MB
+  __getitem__    0.44 us/item (single process, 20000 random)
+  worker startup   5.8s  epoch   4.6s  (0.65 M items/s)
+  worker Pss           start     427MB -> end     428MB
+  worker Private_Dirty start     392MB -> end     392MB
+  worker Rss (naive)   end       615MB
+  sum worker private    1570MB   family Pss (parent+workers)    2214MB
+  elapsed 146s  avg/unit 14s  ETA 0m28s
+[11/12] mode=sharedlist ctx=spawn
+mode=sharedlist ctx=spawn      N=3000000 workers=4
+  build    3.2s  parent Rss 495->936MB  parent peak(ru_maxrss) 1720MB
+  __getitem__    5.90 us/item (single process, 20000 random)
+  worker startup   1.4s  epoch   7.8s  (0.39 M items/s)
+  worker Pss           start     336MB -> end     345MB
+  worker Private_Dirty start     278MB -> end     278MB
+  worker Rss (naive)   end       662MB
+  sum worker private    1112MB   family Pss (parent+workers)    2014MB
+  elapsed 161s  avg/unit 14s  ETA 0m14s
+[12/12] mode=usm ctx=spawn
+mode=usm        ctx=spawn      N=3000000 workers=4
+  build    4.5s  parent Rss 495->956MB  parent peak(ru_maxrss) 1829MB
+  __getitem__    5.49 us/item (single process, 20000 random)
+  worker startup   1.4s  epoch   7.4s  (0.41 M items/s)
+  worker Pss           start     336MB -> end     345MB
+  worker Private_Dirty start     278MB -> end     278MB
+  worker Rss (naive)   end       662MB
+  sum worker private    1112MB   family Pss (parent+workers)    2034MB
+  elapsed 177s  avg/unit 14s  ETA 0m0s
+=== shareddict lookup ===
+M=   1000 pickled=  0.03MiB auto-converted(>=1MiB)=no  build= 0.00s  dict lookup    0.07us  SharedDict lookup       3009.1us  (42,081x)
+M=  10000 pickled=  0.31MiB auto-converted(>=1MiB)=no  build= 0.01s  dict lookup    0.11us  SharedDict lookup      31047.9us  (277,326x)
+M= 100000 pickled=  3.12MiB auto-converted(>=1MiB)=YES build= 0.13s  dict lookup    0.40us  SharedDict lookup     280947.8us  (710,888x)
+MATRIX_DONE total 194s
