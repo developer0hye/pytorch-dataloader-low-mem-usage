@@ -6,3 +6,4 @@ dist/
 build/
 results/*.raw
 .DS_Store
+.claude/worktrees/
