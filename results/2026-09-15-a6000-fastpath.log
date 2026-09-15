@@ -1,0 +1,22 @@
+$ python -u bench/fastpath.py          # a6000 box, Python 3.12.3, torch 2.12.0, numpy 2.4.6
+N=3000000 random __getitem__, us/item (lower is better)
+  plain list                   0.27
+  numpy S32 (path only)        0.18
+  PR SharedList                5.40   build 1.9s
+  FastSharedList               1.01   build 3.5s
+  SharedArray S32 (path)       0.21
+  SharedArray int64 (label)    0.21
+  dict M=   10000: dict   0.03   FastSharedDict   4.89   build 0.0s   PR SharedDict    28343.8
+  dict M=  100000: dict   0.04   FastSharedDict   4.80   build 0.3s   PR SharedDict   258816.8
+  dict M= 1000000: dict   0.04   FastSharedDict   4.76   build 3.5s
+
+$ python -u bench/usm_dict_e2e.py --samples 2000 --labels 100000
+samples=2000 labels=100000 workers=4
+plain dict                         epoch     0.10s  (   19673 samples/s)
+label_of converted to: SharedDict
+use_shared_memory / to_shared_dataset epoch   144.82s  (      14 samples/s)
+slowdown 1,424x
+
+# Earlier run of usm_dict_e2e.py that looked up only the first 2000 keys of the
+# 100k dict (cheapest positions for a linear scan) measured 2.84s / 26x. Kept
+# here because it shows how much the access pattern matters for SharedDict.
