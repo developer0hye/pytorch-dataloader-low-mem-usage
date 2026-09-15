@@ -10,7 +10,7 @@ verbatim) through an independent benchmark at a larger scale than the RFC's
 60k-row set: 3M `(path, label)` tuples, 4 workers, one shuffled epoch,
 Python 3.12.3 / torch 2.12.0, Linux, measuring per-worker `Private_Dirty`
 and `Pss` from `/proc/<pid>/smaps_rollup` plus the parent's `ru_maxrss`.
-Harness and raw logs: <REPO_URL>. Four things I think are worth folding into
+Harness and raw logs: https://github.com/developer0hye/pytorch-dataloader-low-mem-usage. Four things I think are worth folding into
 the RFC before the design discussion.
 
 **1. Under `fork`, `SharedList` gives the same worker memory as any packed
@@ -103,7 +103,7 @@ int64 offsets in torch tensors, so `ForkingPickler` sharing under
   Pss of anything I measured (1755 MB vs 2010 MB for `SharedList`, 4210 MB
   for `list`).
 
-Code and numbers: <REPO_URL>/blob/main/bench/fastpath.py. I am happy to send
+Code and numbers: https://github.com/developer0hye/pytorch-dataloader-low-mem-usage/blob/main/bench/fastpath.py. I am happy to send
 these as a follow-up commit on your branch if you want them.
 
 Smaller notes: `use_shared_memory=True` mutates the user's dataset object
